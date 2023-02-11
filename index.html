@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/esri.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fundamentals</title>
+  </head>
+  <body>
+    <calcite-shell>
+      <calcite-shell-panel slot="panel-start" position="start">
+        <calcite-tabs>
+          <calcite-tab-nav slot="title-group">
+            <calcite-tab-title selected>Stations</calcite-tab-title>
+            <calcite-tab-title>Wells</calcite-tab-title>
+            <calcite-tab-title>Watches</calcite-tab-title>
+          </calcite-tab-nav>
+          <calcite-tab selected>
+            <calcite-tile
+              heading="Number of stations within 50 miles of mouse click"
+              description="client-side, spatial, statistics"
+            >
+              <calcite-chip slot="content-end" id="weatherStationsClickCount"></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Average wind speed within 50 miles from mouse click"
+              description="client-side, spatial, statistics"
+            >
+              <calcite-chip
+                slot="content-end"
+                id="weatherStationsClickAverageWindSpeed"
+              ></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Current count of stations in the Layer"
+              description="server-side"
+            >
+              <calcite-chip slot="content-end" id="weatherStationsLayerCount"></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile heading="Number of stations in the LayerView" description="client-side">
+              <calcite-chip slot="content-end" id="weatherStationsLayerViewCount"></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Number of stations in the view's extent"
+              description="client-side, spatial"
+            >
+              <calcite-chip
+                slot="content-end"
+                id="weatherStationsLayerViewExtentCount"
+              ></calcite-chip>
+            </calcite-tile>
+          </calcite-tab>
+
+          <calcite-tab>
+            <calcite-tile
+              heading="Number of oil and gas wells in the Layer"
+              description="server-side"
+            >
+              <calcite-chip slot="content-end" id="oilAndGasWellsLayerCount"></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Number of oil and gas wells in the LayerView"
+              description="client-side"
+            >
+              <calcite-chip slot="content-end" id="oilAndGasWellsLayerViewCount"></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Number of oil and gas wells in the view's extent"
+              description="client-side, spatial"
+            >
+              <calcite-chip
+                slot="content-end"
+                id="oilAndGasWellsLayerViewExtentCount"
+              ></calcite-chip>
+            </calcite-tile>
+          </calcite-tab>
+
+          <calcite-tab>
+            <calcite-tile
+              heading="Number of weather watches in the Layer"
+              description="server-side"
+            >
+              <calcite-chip
+                slot="content-end"
+                id="weatherWatchesAndWarningsLayerCount"
+              ></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Number of weather watches in the LayerView"
+              description="client-side"
+            >
+              <calcite-chip
+                slot="content-end"
+                id="weatherWatchesAndWarningsLayerViewCount"
+              ></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Number of weather watches in the view's extent"
+              description="client-side, spatial"
+            >
+              <calcite-chip
+                slot="content-end"
+                id="weatherWatchesAndWarningsLayerViewExtentCount"
+              ></calcite-chip>
+            </calcite-tile>
+          </calcite-tab>
+        </calcite-tabs>
+      </calcite-shell-panel>
+      <div id="viewDiv"></div>
+    </calcite-shell>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
