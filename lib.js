@@ -1,10 +1,8 @@
 import PopupTemplate from "@arcgis/core/PopupTemplate";
 
-///////////////////////////////////
-////                           ////
-////        constants          ////
-////                           ////
-///////////////////////////////////
+/**
+ * constants
+ */
 
 const referenceScale = 577790.554289;
 
@@ -17,14 +15,10 @@ const temperatureStops = [
   { value: 150, color: "#d73027" }
 ];
 
-///////////////////////////////////
-////                           ////
-////   arcade expressions      ////
-////                           ////
-///////////////////////////////////
+/**
+ * arcade expressions
+ */
 
-// esri-icon-partly-cloudy doesn't work for some reason :(
-// '\ue917'
 const skyConditionsExpression = `
     IIf(Find( 'Clear', $feature.SKY_CONDTN ) >= 0, '\ue64e', '\ue679');
   `;
@@ -58,11 +52,7 @@ const windSpeedExpression = `
   return speed + " km/h " + dir;
 `;
 
-/////////////////////////////////////////
-////                                 ////
-////   sky conditions label classes  ////
-////                                 ////
-/////////////////////////////////////////
+// sky condition label classes
 const clearSkyConditionLabelClass = {
   labelExpressionInfo: {
     expression: skyConditionsExpression
@@ -103,12 +93,7 @@ const cloudySkyConditionLabelClass = {
 
 export const skyConditionLabelClasses = [clearSkyConditionLabelClass, cloudySkyConditionLabelClass];
 
-///////////////////////////////////
-////                           ////
-//// temperature label classes ////
-////                           ////
-///////////////////////////////////
-
+// temperature label classes
 export const temperatureLabelClasses = temperatureStops.map((stop, index) => {
   let where = "";
 
@@ -138,11 +123,7 @@ export const temperatureLabelClasses = temperatureStops.map((stop, index) => {
   return labelClass;
 });
 
-///////////////////////////////////
-////                           ////
-////  wind speed label class   ////
-////                           ////
-///////////////////////////////////
+// wind speed label class
 export const windLabelClass = {
   labelExpressionInfo: {
     expression: windSpeedExpression
@@ -161,12 +142,7 @@ export const windLabelClass = {
   }
 };
 
-///////////////////////////////////
-////                           ////
-////      popup template       ////
-////                           ////
-///////////////////////////////////
-
+// popup template
 export const popupTemplate = new PopupTemplate({
   content: `
     <p>
@@ -211,11 +187,7 @@ export const popupTemplate = new PopupTemplate({
   title: `{expression/popupTitle}`
 });
 
-///////////////////////////////////
-////                           ////
-////     arrow cim symbol      ////
-////                           ////
-///////////////////////////////////
+// arrow cim symbol
 export const arrowSymbol = {
   type: "cim",
   data: {
@@ -264,12 +236,7 @@ export const arrowSymbol = {
   }
 };
 
-///////////////////////////////////
-////                           ////
-////         renderer          ////
-////                           ////
-///////////////////////////////////
-
+// renderer
 export const renderer = {
   type: "simple",
   symbol: arrowSymbol,

@@ -13,3 +13,11 @@ body {
 #viewDiv {
   flex-grow: 1;
 }
+
+calcite-label {
+  padding: 0.75rem;
+}
+
+calcite-tile {
+  width: 100%;
+}

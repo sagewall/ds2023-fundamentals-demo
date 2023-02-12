@@ -4,16 +4,21 @@ import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
+import Expand from "@arcgis/core/widgets/Expand";
+import LayerList from "@arcgis/core/widgets/LayerList";
 import "@esri/calcite-components/dist/calcite/calcite.css";
 import { setAssetPath } from "@esri/calcite-components/dist/components";
+import "@esri/calcite-components/dist/components/calcite-block";
 import "@esri/calcite-components/dist/components/calcite-chip";
+import "@esri/calcite-components/dist/components/calcite-label";
 import "@esri/calcite-components/dist/components/calcite-shell";
 import "@esri/calcite-components/dist/components/calcite-shell-panel";
-import "@esri/calcite-components/dist/components/calcite-tile";
-import "@esri/calcite-components/dist/components/calcite-tabs";
+import "@esri/calcite-components/dist/components/calcite-switch";
+import "@esri/calcite-components/dist/components/calcite-tab";
 import "@esri/calcite-components/dist/components/calcite-tab-nav";
 import "@esri/calcite-components/dist/components/calcite-tab-title";
-import "@esri/calcite-components/dist/components/calcite-tab";
+import "@esri/calcite-components/dist/components/calcite-tabs";
+import "@esri/calcite-components/dist/components/calcite-tile";
 import {
   popupTemplate,
   renderer,
@@ -22,13 +27,14 @@ import {
   windLabelClass
 } from "./lib";
 import "./style.css";
-import Expand from "@arcgis/core/widgets/Expand";
-import LayerList from "@arcgis/core/widgets/LayerList";
 
 setAssetPath("https://js.arcgis.com/calcite-components/1.0.4-next.4/assets");
 
 // variable to hold any potential highlight handles
 let highlightHandle = null;
+
+// calcite button that switches between applying a where property
+const whereSwitch = document.querySelector("#whereSwitch");
 
 // graphic to reperest the 50 mile radius around a view click event on the map
 const bufferGraphic = new Graphic({
@@ -54,7 +60,7 @@ const clickGraphic = new Graphic({
   }
 });
 
-const weatherStationsLayer = new FeatureLayer({
+const stationsLayer = new FeatureLayer({
   labelingInfo: [...skyConditionLabelClasses, ...temperatureLabelClasses, windLabelClass],
   outFields: ["OBJECTID", "COUNTRY", "TEMP", "WIND_DIRECT", "WIND_SPEED"],
   popupTemplate,
@@ -64,19 +70,19 @@ const weatherStationsLayer = new FeatureLayer({
   url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NOAA_METAR_current_wind_speed_direction_v1/FeatureServer/0"
 });
 
-const weatherWatchesAndWarningsLayer = new FeatureLayer({
+const watchesLayer = new FeatureLayer({
   title: "Watches",
   url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NWS_Watches_Warnings_v1/FeatureServer/6"
 });
 
-const oilAndGasWellsLayer = new FeatureLayer({
+const wellsLayer = new FeatureLayer({
   title: "Wells",
   url: "https://services2.arcgis.com/ZOdjAzAQ2B0f85zi/ArcGIS/rest/services/Oil_and_Gas_Wells/FeatureServer/0"
 });
 
 const map = new Map({
   basemap: "streets-navigation-vector",
-  layers: [weatherWatchesAndWarningsLayer, oilAndGasWellsLayer, weatherStationsLayer]
+  layers: [watchesLayer, wellsLayer, stationsLayer]
 });
 
 const view = new MapView({
@@ -134,22 +140,19 @@ const setup = async () => {
 
 /**
  * Function to query initial feature counts on the weather layers and update the html
- * @returns {void}
  */
 const queryLayerCounts = async () => {
   // query the number of features in the weather stations layer update and the html
-  const weatherStationsLayerCount = await weatherStationsLayer.queryFeatureCount();
-  document.getElementById("weatherStationsLayerCount").innerText = weatherStationsLayerCount;
+  const stationsLayerCount = await stationsLayer.queryFeatureCount();
+  document.getElementById("stationsLayerCount").innerText = stationsLayerCount;
 
   // query the number of features in the weather stations layer update the html
-  const weatherWatchesAndWarningsLayerCount =
-    await weatherWatchesAndWarningsLayer.queryFeatureCount();
-  document.getElementById("weatherWatchesAndWarningsLayerCount").innerText =
-    weatherWatchesAndWarningsLayerCount;
+  const watchesLayerCount = await watchesLayer.queryFeatureCount();
+  document.getElementById("watchesLayerCount").innerText = watchesLayerCount;
 
   // query the number of features in the new york footprints layer update the html
-  const oilAndGasWellsLayerCount = await oilAndGasWellsLayer.queryFeatureCount();
-  document.getElementById("oilAndGasWellsLayerCount").innerText = oilAndGasWellsLayerCount;
+  const wellsLayerCount = await wellsLayer.queryFeatureCount();
+  document.getElementById("wellsLayerCount").innerText = wellsLayerCount;
 };
 
 /**
@@ -157,64 +160,54 @@ const queryLayerCounts = async () => {
  */
 const queryLayerViewCounts = async (extent) => {
   // wait for the  layer views to be loaded in the view
-  const weatherStationsLayerView = await view.whenLayerView(weatherStationsLayer);
-  const weatherWatchesAndWarningsLayerView = await view.whenLayerView(
-    weatherWatchesAndWarningsLayer
-  );
-  const oilAndGasWellsLayerView = await view.whenLayerView(oilAndGasWellsLayer);
+  const stationsLayerView = await view.whenLayerView(stationsLayer);
+  const watchesLayerView = await view.whenLayerView(watchesLayer);
+  const wellsLayerView = await view.whenLayerView(wellsLayer);
 
   // wait for the layer views to stop updating
   reactiveUtils
-    .once(
+    .whenOnce(
       () =>
-        weatherStationsLayerView.updating === false &&
-        weatherWatchesAndWarningsLayerView.updating === false &&
-        oilAndGasWellsLayerView.updating === false
+        stationsLayerView.updating === false &&
+        watchesLayerView.updating === false &&
+        wellsLayerView.updating === false
     )
     .then(async () => {
       // query the number of features in the weather stations layer view and update the html
-      const weatherStationsLayerViewCount = await weatherStationsLayerView.queryFeatureCount();
-      document.getElementById("weatherStationsLayerViewCount").innerText =
-        weatherStationsLayerViewCount;
+      const stationsLayerViewCount = await stationsLayerView.queryFeatureCount();
+      document.getElementById("stationsLayerViewCount").innerText = stationsLayerViewCount;
 
       // query the number of features in the weather stations layer view in the view extent and update the html
-      const weatherStationsExtentQuery = weatherStationsLayerView.createQuery();
-      weatherStationsExtentQuery.geometry = extent;
-      const weatherStationsLayerViewExtentCount = await weatherStationsLayerView.queryFeatureCount(
-        weatherStationsExtentQuery
+      const stationsExtentQuery = stationsLayerView.createQuery();
+      stationsExtentQuery.geometry = extent;
+      const stationsLayerViewExtentCount = await stationsLayerView.queryFeatureCount(
+        stationsExtentQuery
       );
-      document.getElementById("weatherStationsLayerViewExtentCount").innerText =
-        weatherStationsLayerViewExtentCount;
+      document.getElementById("stationsLayerViewExtentCount").innerText =
+        stationsLayerViewExtentCount;
 
       // query the number of features in the weather watches and warnings layer view and update the html
-      const weatherWatchesAndWarningsLayerViewCount =
-        await weatherWatchesAndWarningsLayerView.queryFeatureCount();
-      document.getElementById("weatherWatchesAndWarningsLayerViewCount").innerText =
-        weatherWatchesAndWarningsLayerViewCount;
+      const watchesLayerViewCount = await watchesLayerView.queryFeatureCount();
+      document.getElementById("watchesLayerViewCount").innerText = watchesLayerViewCount;
 
       // query the number of features in the weather watches and warnings layer view in the view extent and update the html
-      const weatherWatchesAndWarningsExtentQuery = weatherWatchesAndWarningsLayerView.createQuery();
-      weatherWatchesAndWarningsExtentQuery.geometry = extent;
-      const weatherWatchesAndWarningsLayerViewExtentCount =
-        await weatherWatchesAndWarningsLayerView.queryFeatureCount(
-          weatherWatchesAndWarningsExtentQuery
-        );
-      document.getElementById("weatherWatchesAndWarningsLayerViewExtentCount").innerText =
-        weatherWatchesAndWarningsLayerViewExtentCount;
+      const watchesExtentQuery = watchesLayerView.createQuery();
+      watchesExtentQuery.geometry = extent;
+      const watchesLayerViewExtentCount = await watchesLayerView.queryFeatureCount(
+        watchesExtentQuery
+      );
+      document.getElementById("watchesLayerViewExtentCount").innerText =
+        watchesLayerViewExtentCount;
 
       // query the number of features in the oil and gas wells layer view and update the html
-      const oilAndGasWellsLayerViewCount = await oilAndGasWellsLayerView.queryFeatureCount();
-      document.getElementById("oilAndGasWellsLayerViewCount").innerText =
-        oilAndGasWellsLayerViewCount;
+      const wellsLayerViewCount = await wellsLayerView.queryFeatureCount();
+      document.getElementById("wellsLayerViewCount").innerText = wellsLayerViewCount;
 
       // query the number of features in the oil and gas wells layer view in the view extent and update the html
-      const oilAndGasWellsExtentQuery = oilAndGasWellsLayerView.createQuery();
-      oilAndGasWellsExtentQuery.geometry = extent;
-      const oceanPointsLayerViewExtentCount = await oilAndGasWellsLayerView.queryFeatureCount(
-        oilAndGasWellsExtentQuery
-      );
-      document.getElementById("oilAndGasWellsLayerViewExtentCount").innerText =
-        oceanPointsLayerViewExtentCount;
+      const wellsExtentQuery = wellsLayerView.createQuery();
+      wellsExtentQuery.geometry = extent;
+      const wLayerViewExtentCount = await wellsLayerView.queryFeatureCount(wellsExtentQuery);
+      document.getElementById("wellsLayerViewExtentCount").innerText = wLayerViewExtentCount;
     });
 };
 
@@ -229,20 +222,23 @@ const queryLayerViewFeatures = async (screenPoint) => {
   newClickGraphic.geometry = point;
   view.graphics.add(newClickGraphic);
 
-  const weatherStationsLayerView = await view.whenLayerView(weatherStationsLayer);
+  const stationsLayerView = await view.whenLayerView(stationsLayer);
 
   // create a query that selects all features within 50 miles of the point
-  const query = weatherStationsLayerView.createQuery();
+  const query = stationsLayerView.createQuery();
   query.geometry = point;
   query.distance = 50;
   query.units = "miles";
   query.spatialRelationship = "intersects";
   query.returnGeometry = false;
   query.returnQueryGeometry = true;
-  //query.where = "COUNTRY = 'Colorado, United States Of America'";
+
+  if (whereSwitch.checked) {
+    query.where = "COUNTRY = 'Colorado, United States Of America'";
+  }
 
   // create a feature set from the layer view using the 50 mile query
-  const featureSet = await weatherStationsLayerView.queryFeatures(query);
+  const featureSet = await stationsLayerView.queryFeatures(query);
 
   // highlight the features present in the feature set in the layer view
   const ids = featureSet.features.map((feature) => feature.attributes.OBJECTID);
@@ -250,7 +246,7 @@ const queryLayerViewFeatures = async (screenPoint) => {
     highlightHandle.remove();
     highlightHandle = null;
   }
-  highlightHandle = weatherStationsLayerView.highlight(ids);
+  highlightHandle = stationsLayerView.highlight(ids);
 
   // create a new graphic for the 50 mile search radius and add it to the view's graphics collection
   const newBufferGraphic = bufferGraphic.clone();
@@ -273,12 +269,12 @@ const queryLayerViewFeatures = async (screenPoint) => {
   ];
 
   // query the layerview to calculate the statistics
-  const statisticsFeatureSet = await weatherStationsLayerView.queryFeatures(statisticsQuery);
+  const statisticsFeatureSet = await stationsLayerView.queryFeatures(statisticsQuery);
 
   //  add the statistics to the calcite chips in the html
-  document.getElementById("weatherStationsClickCount").innerText =
+  document.getElementById("stationsClickCount").innerText =
     statisticsFeatureSet.features[0].attributes.COUNT;
-  document.getElementById("weatherStationsClickAverageWindSpeed").innerText =
+  document.getElementById("stationsClickAverageWindSpeed").innerText =
     Math.floor(statisticsFeatureSet.features[0].attributes.AVG_WIND_SPEED) + "km/h";
 };
 
