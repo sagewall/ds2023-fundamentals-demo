@@ -1,31 +1,31 @@
 import "@arcgis/core/assets/esri/themes/light/main.css";
-import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
-import Graphic from "@arcgis/core/Graphic";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import Map from "@arcgis/core/Map";
-import MapView from "@arcgis/core/views/MapView";
-import Expand from "@arcgis/core/widgets/Expand";
-import LayerList from "@arcgis/core/widgets/LayerList";
+import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
+import Graphic from "@arcgis/core/Graphic.js";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
+import Map from "@arcgis/core/Map.js";
+import MapView from "@arcgis/core/views/MapView.js";
+import Expand from "@arcgis/core/widgets/Expand.js";
+import LayerList from "@arcgis/core/widgets/LayerList.js";
 import "@esri/calcite-components/dist/calcite/calcite.css";
-import { setAssetPath } from "@esri/calcite-components/dist/components";
-import "@esri/calcite-components/dist/components/calcite-block";
-import "@esri/calcite-components/dist/components/calcite-chip";
-import "@esri/calcite-components/dist/components/calcite-label";
-import "@esri/calcite-components/dist/components/calcite-shell";
-import "@esri/calcite-components/dist/components/calcite-shell-panel";
-import "@esri/calcite-components/dist/components/calcite-switch";
-import "@esri/calcite-components/dist/components/calcite-tab";
-import "@esri/calcite-components/dist/components/calcite-tab-nav";
-import "@esri/calcite-components/dist/components/calcite-tab-title";
-import "@esri/calcite-components/dist/components/calcite-tabs";
-import "@esri/calcite-components/dist/components/calcite-tile";
+import "@esri/calcite-components/dist/components/calcite-block.js";
+import "@esri/calcite-components/dist/components/calcite-chip.js";
+import "@esri/calcite-components/dist/components/calcite-label.js";
+import "@esri/calcite-components/dist/components/calcite-shell-panel.js";
+import "@esri/calcite-components/dist/components/calcite-shell.js";
+import "@esri/calcite-components/dist/components/calcite-switch.js";
+import "@esri/calcite-components/dist/components/calcite-tab-nav.js";
+import "@esri/calcite-components/dist/components/calcite-tab-title.js";
+import "@esri/calcite-components/dist/components/calcite-tab.js";
+import "@esri/calcite-components/dist/components/calcite-tabs.js";
+import "@esri/calcite-components/dist/components/calcite-tile.js";
+import { setAssetPath } from "@esri/calcite-components/dist/components/index.js";
 import {
   popupTemplate,
   renderer,
   skyConditionLabelClasses,
   temperatureLabelClasses,
   windLabelClass
-} from "./lib";
+} from "./lib.js";
 import "./style.css";
 
 setAssetPath("https://js.arcgis.com/calcite-components/1.0.4-next.4/assets");
