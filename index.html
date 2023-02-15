@@ -16,6 +16,21 @@
             <calcite-tab-title>Wells</calcite-tab-title>
           </calcite-tab-nav>
           <calcite-tab selected>
+            <calcite-tile heading="Number of stations in the Layer" description="server-side">
+              <calcite-chip slot="content-end" id="stationsLayerCount"></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile heading="Number of stations in the LayerView" description="client-side">
+              <calcite-chip slot="content-end" id="stationsLayerViewCount"></calcite-chip>
+            </calcite-tile>
+
+            <calcite-tile
+              heading="Number of stations in the view's extent"
+              description="client-side, spatial"
+            >
+              <calcite-chip slot="content-end" id="stationsLayerViewExtentCount"></calcite-chip>
+            </calcite-tile>
+
             <calcite-label>
               where: "COUNTRY = 'Colorado, United States Of America'"
               <calcite-switch id="whereSwitch"></calcite-switch
@@ -32,21 +47,6 @@
               description="client-side, spatial, statistics"
             >
               <calcite-chip slot="content-end" id="stationsClickAverageWindSpeed"></calcite-chip>
-            </calcite-tile>
-
-            <calcite-tile heading="Number of stations in the Layer" description="server-side">
-              <calcite-chip slot="content-end" id="stationsLayerCount"></calcite-chip>
-            </calcite-tile>
-
-            <calcite-tile heading="Number of stations in the LayerView" description="client-side">
-              <calcite-chip slot="content-end" id="stationsLayerViewCount"></calcite-chip>
-            </calcite-tile>
-
-            <calcite-tile
-              heading="Number of stations in the view's extent"
-              description="client-side, spatial"
-            >
-              <calcite-chip slot="content-end" id="stationsLayerViewExtentCount"></calcite-chip>
             </calcite-tile>
           </calcite-tab>
 
