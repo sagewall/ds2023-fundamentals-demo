@@ -33,6 +33,9 @@ setAssetPath("https://js.arcgis.com/calcite-components/1.0.4-next.4/assets");
 // variable to hold any potential highlight handles
 let highlightHandle = null;
 
+// variable to hold any potential map view click events
+let mapViewClickHandle = null;
+
 // calcite button that switches between applying a where property
 const whereSwitch = document.querySelector("#whereSwitch");
 
@@ -67,17 +70,20 @@ const stationsLayer = new FeatureLayer({
   popupEnabled: false,
   renderer,
   title: "Stations",
-  url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NOAA_METAR_current_wind_speed_direction_v1/FeatureServer/0"
+  url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NOAA_METAR_current_wind_speed_direction_v1/FeatureServer/0",
+  visible: false
 });
 
 const watchesLayer = new FeatureLayer({
   title: "Watches",
-  url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NWS_Watches_Warnings_v1/FeatureServer/6"
+  url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NWS_Watches_Warnings_v1/FeatureServer/6",
+  visible: false
 });
 
 const wellsLayer = new FeatureLayer({
   title: "Wells",
-  url: "https://services2.arcgis.com/ZOdjAzAQ2B0f85zi/ArcGIS/rest/services/Oil_and_Gas_Wells/FeatureServer/0"
+  url: "https://services2.arcgis.com/ZOdjAzAQ2B0f85zi/ArcGIS/rest/services/Oil_and_Gas_Wells/FeatureServer/0",
+  visible: true
 });
 
 const map = new Map({
@@ -88,17 +94,71 @@ const map = new Map({
 const view = new MapView({
   map,
   center: {
-    latitude: 39.9,
-    longitude: -105
+    latitude: 38.3,
+    longitude: -99
   },
   container: "viewDiv",
   zoom: 7
 });
 
 /**
+ * Event handlers to change the visiblity of layers and add event handlers
+ * based on the active tab
+ */
+document.querySelectorAll("calcite-tab-title").forEach((element) => {
+  element.addEventListener("calciteTabsActivate", (event) => {
+    switch (event.target.tab) {
+      case "stations":
+        stationsLayer.visible = true;
+        watchesLayer.visible = false;
+        wellsLayer.visible = false;
+
+        // Add a click event handler to the view to remove all graphics
+        // and invoke queryLayerViewFeatures()
+        if (!mapViewClickHandle) {
+          mapViewClickHandle = view.on("click", (event) => {
+            view.graphics.removeAll();
+            queryLayerViewFeatures(event);
+          });
+        }
+        break;
+
+      case "watches":
+        stationsLayer.visible = false;
+        watchesLayer.visible = true;
+        wellsLayer.visible = false;
+
+        view.graphics.removeAll();
+
+        // remove a click event event handler on view
+        // if it exists
+        if (mapViewClickHandle) {
+          mapViewClickHandle.remove();
+          mapViewClickHandle = null;
+        }
+        break;
+
+      default:
+        stationsLayer.visible = false;
+        watchesLayer.visible = false;
+        wellsLayer.visible = true;
+
+        view.graphics.removeAll();
+
+        // remove a click event event handler on view
+        // if it exists
+        if (mapViewClickHandle) {
+          mapViewClickHandle.remove();
+          mapViewClickHandle = null;
+        }
+        break;
+    }
+  });
+});
+
+/**
  * Function to invoke queryLayerViewCounts() when the view becomes stationary
- * and add a click event to the view to invoke queryLayerViewFeatures().
- * Add a LayerList widget with a legend embedded
+ * and add a LayerList widget with a legend embedded
  */
 const setup = async () => {
   reactiveUtils.watch(
@@ -109,11 +169,6 @@ const setup = async () => {
       }
     }
   );
-
-  view.on("click", (event) => {
-    view.graphics.removeAll();
-    queryLayerViewFeatures(event);
-  });
 
   const layerList = new LayerList({
     view: view,
@@ -139,7 +194,7 @@ const setup = async () => {
 };
 
 /**
- * Function to query initial feature counts on the weather layers and update the html
+ * Function to query initial feature counts on the layers and update the html
  */
 const queryLayerCounts = async () => {
   // query the number of features in the weather stations layer update and the html
@@ -156,7 +211,7 @@ const queryLayerCounts = async () => {
 };
 
 /**
- * Function that queries counts for layers and views
+ * Function that queries counts for layers and layer views
  */
 const queryLayerViewCounts = async (extent) => {
   // wait for the  layer views to be loaded in the view

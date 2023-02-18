@@ -10,14 +10,14 @@ body {
   display: flex;
 }
 
-#viewDiv {
-  flex-grow: 1;
-}
-
-calcite-label {
-  padding: 0.75rem;
+calcite-tab-nav {
+  margin: auto;
 }
 
 calcite-tile {
   width: 100%;
+}
+
+#viewDiv {
+  flex-grow: 1;
 }
