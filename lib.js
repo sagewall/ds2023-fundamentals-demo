@@ -187,7 +187,6 @@ export const popupTemplate = new PopupTemplate({
   title: `{expression/popupTitle}`
 });
 
-// arrow cim symbol
 export const arrowSymbol = {
   type: "cim",
   data: {
@@ -198,18 +197,18 @@ export const arrowSymbol = {
         {
           type: "CIMVectorMarker",
           size: 36,
-          frame: { xmin: 0.0, ymin: 0.0, xmax: 17.0, ymax: 17.0 },
+          frame: { xmin: 0.0, ymin: 0.0, xmax: 10.0, ymax: 17.0 },
           markerGraphics: [
             {
               type: "CIMMarkerGraphic",
               geometry: {
                 rings: [
                   [
-                    [13, 0],
-                    [8, 5],
-                    [3, 0],
-                    [8, 17],
-                    [13, 0]
+                    [5, 0],
+                    [10, 17],
+                    [5, 12],
+                    [0, 17],
+                    [5, 0]
                   ]
                 ]
               },
