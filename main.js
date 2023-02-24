@@ -248,64 +248,58 @@ const queryLayerViewCounts = async (extent) => {
   const wellsLayerView = await view.whenLayerView(wellsLayer);
 
   // wait for the layer views to stop updating
-  reactiveUtils
-    .whenOnce(
-      () =>
-        earthquakesLayerView.updating === false &&
-        stationsLayerView.updating === false &&
-        watchesLayerView.updating === false &&
-        wellsLayerView.updating === false
-    )
-    .then(async () => {
-      // query the number of features in the earthquakes layer view and update the html
-      const earthquakesLayerViewCount = await earthquakesLayerView.queryFeatureCount();
-      document.getElementById("earthquakesLayerViewCount").innerText = earthquakesLayerViewCount;
+  await reactiveUtils.whenOnce(
+    () =>
+      earthquakesLayerView.updating === false &&
+      stationsLayerView.updating === false &&
+      watchesLayerView.updating === false &&
+      wellsLayerView.updating === false
+  );
 
-      // query the number of features in the earthquakes layer view in the view extent and update the html
-      const earthquakesExtentQuery = earthquakesLayerView.createQuery();
-      earthquakesExtentQuery.geometry = extent;
-      const earthquakesLayerViewExtentCount = await earthquakesLayerView.queryFeatureCount(
-        earthquakesExtentQuery
-      );
-      document.getElementById("earthquakesLayerViewExtentCount").innerText =
-        earthquakesLayerViewExtentCount;
+  // query the number of features in the earthquakes layer view and update the html
+  const earthquakesLayerViewCount = await earthquakesLayerView.queryFeatureCount();
+  document.getElementById("earthquakesLayerViewCount").innerText = earthquakesLayerViewCount;
 
-      // query the number of features in the weather stations layer view and update the html
-      const stationsLayerViewCount = await stationsLayerView.queryFeatureCount();
-      document.getElementById("stationsLayerViewCount").innerText = stationsLayerViewCount;
+  // query the number of features in the earthquakes layer view in the view extent and update the html
+  const earthquakesExtentQuery = earthquakesLayerView.createQuery();
+  earthquakesExtentQuery.geometry = extent;
+  const earthquakesLayerViewExtentCount = await earthquakesLayerView.queryFeatureCount(
+    earthquakesExtentQuery
+  );
+  document.getElementById("earthquakesLayerViewExtentCount").innerText =
+    earthquakesLayerViewExtentCount;
 
-      // query the number of features in the weather stations layer view in the view extent and update the html
-      const stationsExtentQuery = stationsLayerView.createQuery();
-      stationsExtentQuery.geometry = extent;
-      const stationsLayerViewExtentCount = await stationsLayerView.queryFeatureCount(
-        stationsExtentQuery
-      );
-      document.getElementById("stationsLayerViewExtentCount").innerText =
-        stationsLayerViewExtentCount;
+  // query the number of features in the weather stations layer view and update the html
+  const stationsLayerViewCount = await stationsLayerView.queryFeatureCount();
+  document.getElementById("stationsLayerViewCount").innerText = stationsLayerViewCount;
 
-      // query the number of features in the weather watches and warnings layer view and update the html
-      const watchesLayerViewCount = await watchesLayerView.queryFeatureCount();
-      document.getElementById("watchesLayerViewCount").innerText = watchesLayerViewCount;
+  // query the number of features in the weather stations layer view in the view extent and update the html
+  const stationsExtentQuery = stationsLayerView.createQuery();
+  stationsExtentQuery.geometry = extent;
+  const stationsLayerViewExtentCount = await stationsLayerView.queryFeatureCount(
+    stationsExtentQuery
+  );
+  document.getElementById("stationsLayerViewExtentCount").innerText = stationsLayerViewExtentCount;
 
-      // query the number of features in the weather watches and warnings layer view in the view extent and update the html
-      const watchesExtentQuery = watchesLayerView.createQuery();
-      watchesExtentQuery.geometry = extent;
-      const watchesLayerViewExtentCount = await watchesLayerView.queryFeatureCount(
-        watchesExtentQuery
-      );
-      document.getElementById("watchesLayerViewExtentCount").innerText =
-        watchesLayerViewExtentCount;
+  // query the number of features in the weather watches and warnings layer view and update the html
+  const watchesLayerViewCount = await watchesLayerView.queryFeatureCount();
+  document.getElementById("watchesLayerViewCount").innerText = watchesLayerViewCount;
 
-      // query the number of features in the oil and gas wells layer view and update the html
-      const wellsLayerViewCount = await wellsLayerView.queryFeatureCount();
-      document.getElementById("wellsLayerViewCount").innerText = wellsLayerViewCount;
+  // query the number of features in the weather watches and warnings layer view in the view extent and update the html
+  const watchesExtentQuery = watchesLayerView.createQuery();
+  watchesExtentQuery.geometry = extent;
+  const watchesLayerViewExtentCount = await watchesLayerView.queryFeatureCount(watchesExtentQuery);
+  document.getElementById("watchesLayerViewExtentCount").innerText = watchesLayerViewExtentCount;
 
-      // query the number of features in the oil and gas wells layer view in the view extent and update the html
-      const wellsExtentQuery = wellsLayerView.createQuery();
-      wellsExtentQuery.geometry = extent;
-      const wLayerViewExtentCount = await wellsLayerView.queryFeatureCount(wellsExtentQuery);
-      document.getElementById("wellsLayerViewExtentCount").innerText = wLayerViewExtentCount;
-    });
+  // query the number of features in the oil and gas wells layer view and update the html
+  const wellsLayerViewCount = await wellsLayerView.queryFeatureCount();
+  document.getElementById("wellsLayerViewCount").innerText = wellsLayerViewCount;
+
+  // query the number of features in the oil and gas wells layer view in the view extent and update the html
+  const wellsExtentQuery = wellsLayerView.createQuery();
+  wellsExtentQuery.geometry = extent;
+  const wLayerViewExtentCount = await wellsLayerView.queryFeatureCount(wellsExtentQuery);
+  document.getElementById("wellsLayerViewExtentCount").innerText = wLayerViewExtentCount;
 };
 
 /**
